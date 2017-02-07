@@ -1,0 +1,79 @@
+
+
+<html>
+
+	<head>
+		<title>Book a room!</title>
+	</head>
+	
+	<script>
+		var http_request = new XMLHttpRequest();
+		http_request.open("GET", "/availablerooms", true);
+		http_request.onreadystatechange = function() {
+			if (http_request.readyState == 4 && http_request.status == 200) {
+				room = JSON.parse(http_request.responseText);
+				
+				
+					var newDiv=document.createElement('div');
+					var html = '<select id="availroom">';
+					var quote = '"';
+					for (var field in room){
+						html += "<option value=" + quote + room[field].id + quote + ">"+ room[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('ROOM').appendChild(newDiv);
+			}
+		};
+		http_request.send(null);		
+		
+	</script>	
+
+<body>
+	
+	<h1 style="text-align:center;">USER WEBPAGE</h1>
+	
+	<br>
+	<br>
+	<p style="margin-left:50px;">Select the Room to check in:
+	<div id="ROOM" style="margin-left:50px;">
+		</div>
+	</p>
+	
+	<button type="button" style="margin-left:50px;" onClick="chooseroom(availroom.value, {{ url }})">Check in</button>
+	
+	<p id="FINALINFO" style="margin-left:50px;"></p>
+	<br>
+	<br>
+	<a href="/user/{{ url }}" style="text-align:center;"><h2> Back </h2></a>
+	<br>
+	<br>
+	<a href="/logout/{{ url }}" style="text-align:center;"><h2> Logout </h2></a>
+	<script>
+	
+		function removeroom(id_room, user) {
+			
+			var url_total = "/delroom/" + user + "/" + id_room;
+			document.getElementById('DELETE').action = url_total;
+		}
+
+		function chooseroom(aux, user) {
+			
+			document.getElementById('FINALINFO').innerHTML = "";
+			
+			var info;
+			var url = "/checkin/" + user + "/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					info = JSON.parse(http_request.responseText);
+					document.getElementById('FINALINFO').innerHTML = info.state;
+				}
+			
+			};
+			http_request.send(null);
+		}
+				
+		
+	</script>

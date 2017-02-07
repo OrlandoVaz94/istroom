@@ -1,0 +1,81 @@
+
+
+<html>
+
+	<head>
+		<title>Book a room!</title>
+	</head>
+	
+	<script>
+		var http_request = new XMLHttpRequest();
+		http_request.open("GET", "/availablerooms", true);
+		http_request.onreadystatechange = function() {
+			if (http_request.readyState == 4 && http_request.status == 200) {
+				room = JSON.parse(http_request.responseText);
+				
+				
+					var newDiv=document.createElement('div');
+					var html = '<select id="roomdel">';
+					var quote = '"';
+					for (var field in room){
+						html += "<option value=" + quote + room[field].id + quote + ">"+ room[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('ROOM').appendChild(newDiv);
+			}
+		};
+		http_request.send(null);		
+		
+	</script>	
+
+<body>
+	
+	<h1 style="text-align:center;">ADMIN WEBPAGE</h1>
+	
+	<br>
+	<br>
+	<p style="margin-left:50px;">Select the room that you want to delete:
+	<div id="ROOM" style="margin-left:50px;">
+		</div>
+	</p>
+	
+	
+	<button type="button" style="margin-left:50px;" onClick="removeroom(roomdel.value, {{ url }})">Delete Room</button>
+
+	<p id="FINALINFO" style="margin-left:50px;"></p>
+	<br>
+	<br>
+	<a href="/admin/{{ url }}" style="text-align:center;"><h2> Back </h2></a>
+	<br>
+	<br>
+	<a href="/logout/{{ url }}" style="text-align:center;"><h2> Logout </h2></a>
+	
+	
+	<script>
+	
+		
+		function removeroom(aux, user) {
+		
+			
+			document.getElementById('FINALINFO').innerHTML = "";
+			
+			var info;
+			var url = "/delroom/" + user + "/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					info = JSON.parse(http_request.responseText);
+					document.getElementById('FINALINFO').innerHTML = info.state;
+				}
+			
+			};
+			http_request.send(null);
+		}
+		
+		
+	</script>
+
+</body>
+</html>

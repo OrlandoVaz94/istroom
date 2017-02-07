@@ -1,0 +1,217 @@
+
+
+<html>
+
+	<head>
+		<title>Book a room!</title>
+	</head>
+	
+	<script>
+		var http_request = new XMLHttpRequest();
+		http_request.open("GET", "/campus", true);
+		http_request.onreadystatechange = function() {
+			if (http_request.readyState == 4 && http_request.status == 200) {
+				campus_object = JSON.parse(http_request.responseText);
+				
+				
+					var newDiv=document.createElement('div');
+					var html = '<select id="search_Campus">';
+					var quote = '"';
+					for (var field in campus_object){
+						html += "<option value=" + quote + campus_object[field].id + quote + ">" + campus_object[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('CAMPUS').appendChild(newDiv);
+			}
+		};
+		http_request.send(null);		
+		
+	</script>	
+
+<body>
+	
+	<h1 style="text-align:center;">ADMIN WEBPAGE</h1>
+	
+	<br>
+	<br>
+	
+	<p style="margin-left:50px;">Select Campus:
+	<div id="CAMPUS" style="margin-left:50px;" onclick="fun1()">
+		</div>
+	</p>
+	
+	<button type="button" style="margin-left:50px;" onClick="loadBuilding(search_Campus.value)">See Buildings</button>
+	<br>
+	<br>
+	<p style="margin-left:50px;">Select Building:
+	<div id="BUILDING" style="margin-left:50px;" onclick="fun2()">
+		</div>
+	</p>
+	
+	<button type="button" style="margin-left:50px;" onClick="loadFloor(search_Building.value)">See Floors</button>
+	<br>
+	<br>
+	<p style="margin-left:50px;">Select Floor:
+	<div id="FLOOR" style="margin-left:50px;" onclick="fun3()">
+		</div>
+	</p>
+	
+	<button type="button" style="margin-left:50px;" onClick="loadRoom(search_Floor.value)">See Rooms</button>
+	<br>
+	<br>
+	<p style="margin-left:50px;">Select Room:
+	<div id="ROOM" style="margin-left:50px;">
+		</div>
+	</p>
+	
+	<button type="button" style="margin-left:50px;" onClick="addroom({{ url }}, search_Room.value)">Add Room</button>
+	
+	<p id="FINALINFO" style="margin-left:50px;"></p>
+	<br>
+	<br>
+	<a href="/admin/{{ url }}" style="text-align:center;"><h2> Back </h2></a>
+	<br>
+	<a href="/logout/{{ url }}" style="text-align:center;"><h2> Logout </h2></a>
+	
+	
+	<script>
+	
+		function fun1() {
+		
+			var list = document.getElementById("BUILDING");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+
+			var list = document.getElementById("FLOOR");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+			
+			var list = document.getElementById("ROOM");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+		} 
+		
+	
+		function loadBuilding(aux) {
+			
+			document.getElementById('FINALINFO').innerHTML = "";
+		
+			var url = "/place/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					place = JSON.parse(http_request.responseText);
+					
+					var newDiv=document.createElement('div');
+					var html = '<select id="search_Building">';
+					var quote = '"';
+					for (var field in place.containedSpaces){
+						html += "<option value=" + quote + place.containedSpaces[field].id + quote + ">"+ place.containedSpaces[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('BUILDING').appendChild(newDiv);	
+				}
+			};
+			http_request.send(null);
+		}
+		
+		function fun2() {
+
+			var list = document.getElementById("FLOOR");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+			
+			var list = document.getElementById("ROOM");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+		} 
+		
+		function loadFloor(aux) {
+			
+			document.getElementById('FINALINFO').innerHTML = "";
+			
+			var url = "/place/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					place = JSON.parse(http_request.responseText);
+					
+					var newDiv=document.createElement('div');
+					var html = '<select id="search_Floor">';
+					var quote = '"';
+					for (var field in place.containedSpaces){
+						html += "<option value=" + quote + place.containedSpaces[field].id + quote + ">"+ place.containedSpaces[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('FLOOR').appendChild(newDiv);
+					
+				}
+			};
+			http_request.send(null);
+		}
+		
+		
+		function fun3() {
+			
+			var list = document.getElementById("ROOM");
+			while(list.hasChildNodes()){
+				list.removeChild(list.firstChild);
+			}
+		} 		
+		
+		
+		function loadRoom(aux) {
+			
+			document.getElementById('FINALINFO').innerHTML = "";
+			
+			var url = "/place/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					place = JSON.parse(http_request.responseText);
+					
+					var newDiv=document.createElement('div');
+					var html = '<select id="search_Room">';
+					var quote = '"';
+					for (var field in place.containedSpaces){
+						html += "<option value=" + quote + place.containedSpaces[field].id + quote + ">"+ place.containedSpaces[field].name + "</option>";
+					}
+					html += '</select>';
+					newDiv.innerHTML= html;
+					document.getElementById('ROOM').appendChild(newDiv);
+					
+				}
+			};
+			http_request.send(null);
+		}
+		
+		function addroom(user, aux) {
+
+			var url = "/addroom/" + user + "/" + aux;
+			var http_request = new XMLHttpRequest();
+			http_request.open("GET", url, true);
+			http_request.onreadystatechange = function() {
+				if (http_request.readyState == 4 && http_request.status == 200) {
+					info = JSON.parse(http_request.responseText);
+					document.getElementById('FINALINFO').innerHTML = info.state;
+				}
+			
+			};
+			http_request.send(null);
+		}
+		
+	</script>
+
+</body>
+</html>
